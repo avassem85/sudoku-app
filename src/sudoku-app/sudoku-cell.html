@@ -45,14 +45,10 @@
           type: Object,
           reflectToAttribute: true,
           notify: true
-        },
-        cssClasses: {
-            type: String,
-            computed: '_computeCssClasses(cell)'
         }
       },
       ready: function(){
-        this.initializeClasses();
+        this.initializeCssClasses();
 
         this.cellResolved = function(e, detail, sender) {
           let cell = detail;
@@ -73,7 +69,7 @@
           }
         }
       },
-      initializeClasses: function(){
+      initializeCssClasses: function(){
         this.toggleClass('border-top', this.cell.borders.top, this.$.input);
         this.toggleClass('border-bottom', this.cell.borders.bottom, this.$.input);
         this.toggleClass('border-left', this.cell.borders.left, this.$.input);
