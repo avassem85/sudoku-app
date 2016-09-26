@@ -1,0 +1,7 @@
+{
+  "name": "sudoku-app",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "web-component-tester": "^4.3.4"
+  }
+}

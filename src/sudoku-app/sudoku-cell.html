@@ -1,0 +1,87 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-signals/iron-signals.html">
+
+<dom-module id="sudoku-cell">
+  <template>
+    <style>
+      .border-top{
+          border-top:3px solid black;
+      }
+      .border-bottom{
+          border-bottom:3px solid black;
+      }
+      .border-left{
+          border-left:3px solid black;
+      }
+      .border-right{
+          border-right:3px solid black;
+      }
+
+      input {
+          float:left;
+          display:inline;
+          width:50px;
+          height:50px;
+          text-align:center;
+          font-size:24px;
+          border:1px solid black;
+          border-radius: 0;
+          margin:0;
+          padding:0;
+      }
+    </style>
+
+    <input id="input" type="text" maxlength="1" value="{{cell.value}}" on-tap="_click">
+    <iron-signals id="ironSignal" on-iron-signal-cell-resolved="cellResolved"></iron-signals>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'sudoku-cell',
+
+      properties: {
+        cell: {
+          type: Object,
+          reflectToAttribute: true,
+          notify: true
+        },
+        cssClasses: {
+            type: String,
+            computed: '_computeCssClasses(cell)'
+        }
+      },
+      ready: function(){
+        this.initializeClasses();
+
+        this.cellResolved = function(e, detail, sender) {
+          let cell = detail;
+          if(cell !== this.cell && this.cell.possibleValues.length > 1){
+            if(this.cell.row === cell.row || this.cell.column === cell.column || this.cell.region === cell.region){
+              this.removePossibleValue(cell.value);
+            }
+          }
+        };
+      },
+      removePossibleValue: function(value){
+        let possibleValues = this.cell.possibleValues;
+        if(possibleValues.length > 1 && possibleValues.indexOf(value) !== -1){
+          this.splice('cell.possibleValues', possibleValues.indexOf(value), 1);
+          if(possibleValues.length === 1){
+            this.set('cell.value', this.cell.possibleValues[0]);
+            this.fire('iron-signal', {name: "cell-resolved", data: this.cell});
+          }
+        }
+      },
+      initializeClasses: function(){
+        this.toggleClass('border-top', this.cell.borders.top, this.$.input);
+        this.toggleClass('border-bottom', this.cell.borders.bottom, this.$.input);
+        this.toggleClass('border-left', this.cell.borders.left, this.$.input);
+        this.toggleClass('border-right', this.cell.borders.right, this.$.input);
+      },
+      _click: function(e){
+        console.log(this.debug);
+      }
+    });
+  </script>
+</dom-module>
