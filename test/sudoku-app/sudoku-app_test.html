@@ -5,8 +5,8 @@
     <title>sudoku-app test</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../bower_components/web-component-tester/browser.js"></script>
 
     <link rel="import" href="../../src/sudoku-app/sudoku-app.html">
   </head>
@@ -23,6 +23,7 @@
 
         test('instantiating the element works', function() {
           var element = fixture('basic');
+          console.log(element);
           assert.equal(element.is, 'sudoku-app');
         });
 
