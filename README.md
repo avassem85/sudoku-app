@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # \<sudoku-app\>
 
 Sudoku
@@ -36,3 +37,7 @@ $ polymer test
 ```
 
 Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+=======
+# sudoku-app
+Polymer Sudoku app
+>>>>>>> 692b64a0d52b8a5c92c60ceab8c940a6ce4740b1
