@@ -1,26 +1,13 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../src/sudoku-app/sudoku-cell.html">
+<link rel="import" href="../../src/sudoku-app/sudoku-grid.html">
 
 <dom-module id="sudoku-app">
   <template>
     <style>
-      .sudoku{
-          width:476px;
-          height:476px;
-
-          border: 1px solid black;
-
-          text-align:center;
-          font-size:24px;
-      }
     </style>
 
-    <div class="sudoku">
-      <template is="dom-repeat" id="sudokuCells" items="{{grid.cells}}" as="cell">
-        <sudoku-cell id="sudoku-cell" cell={{cell}}></sudoku-cell>
-      </template>
-    </div>
-    <button on-tap="click"></button>
+    <sudoku-grid id="grid"></sudoku-grid>
+    <button on-tap="newSudoku">New</button><button on-tap="loadSudoku">Load</button>
   </template>
 
   <script>
@@ -29,90 +16,27 @@
       is: 'sudoku-app',
 
       properties: {
-        data: {
-          type: Array,
-          value: function() { return [
-            '4', '9', ' ', ' ', '2', '1', '5', ' ', ' ',
-            ' ', '7', '5', '3', ' ', ' ', ' ', ' ', '2',
-            '8', ' ', ' ', ' ', ' ', ' ', ' ', '4', ' ',
-            ' ', ' ', ' ', ' ', ' ', '5', ' ', '8', ' ',
-            ' ', '3', ' ', '2', ' ', '6', ' ', '9', ' ',
-            ' ', '8', ' ', '7', ' ', ' ', ' ', ' ', ' ',
-            ' ', '4', ' ', ' ', ' ', ' ', ' ', ' ', '5',
-            '2', ' ', ' ', ' ', ' ', '8', '9', '3', ' ',
-            ' ', ' ', '9', '6', '7', ' ', ' ', '1', '8'
-          ]}
-        },
-        grid: {
-          type: Object,
-          value: function() {
-            return {
-              cells: []
-            }
-          }
-        }
+
       },
       ready: function(){
-        this._loadData();
+        this.loadSudoku();
       },
-      _loadData: function(){
-        let rowSize = Math.sqrt(this.data.length);
-        let columnSize = Math.sqrt(this.data.length);
-        let regionSize =  Math.sqrt(Math.sqrt(this.data.length));
-        let possibleValues = [];
-        let resolvedCells = [];
-
-        for (let i = 0; i < rowSize; i++){
-          possibleValues.push(i+1);
-        }
-
-        for (let y = 0; y < columnSize; y++){
-          for (let x = 0; x < rowSize; x++){
-            let i = x+(y*rowSize);
-            let value;
-            let possibleCellValues;
-            if(!isNaN(this.data[i]) && +this.data[i] !== 0){
-              value = parseInt(this.data[i], 10);
-              possibleCellValues = [parseInt(this.data[i], 10)];
-            } else {
-              value = undefined;
-              possibleCellValues = possibleValues.slice();
-            }
-            let row = y+1;
-            let column = x+1;
-            let region = (Math.floor(x/regionSize) + (Math.floor(y/regionSize) * 3)+1);
-            let borderTop = false || (row % regionSize) === 1;
-            let borderBottom = false || row === rowSize;
-            let borderLeft = false || (column % regionSize) === 1;
-            let borderRight = false || column === columnSize;
-            let cell = {
-                          row: row,
-                          column: column,
-                          region: region,
-                          value: value,
-                          possibleValues: possibleCellValues,
-                          borders: {
-                                      top: borderTop,
-                                      bottom: borderBottom,
-                                      left: borderLeft,
-                                      right: borderRight
-                                    }
-                        };
-
-            if(cell.possibleValues.length === 1){
-              resolvedCells.push(cell);
-            }
-            this.push('grid.cells', cell);
-          }
-        }
-
-        for(let i = 0; i < resolvedCells.length; i++){
-          this.async(function(){
-            this.fire('iron-signal', {name: "cell-resolved", data: resolvedCells[i]});
-          }, 100);
-        }
-
-        console.log(this.grid);
+      newSudoku: function(){
+        this.$.grid._newSudoku();
+      },
+      loadSudoku: function(){
+        let grid = [
+          '4', '9', ' ', ' ', '2', '1', '5', ' ', ' ',
+          ' ', '7', '5', '3', ' ', ' ', ' ', ' ', '2',
+          '8', ' ', ' ', ' ', ' ', ' ', ' ', '4', ' ',
+          ' ', ' ', ' ', ' ', ' ', '5', ' ', '8', ' ',
+          ' ', '3', ' ', '2', ' ', '6', ' ', '9', ' ',
+          ' ', '8', ' ', '7', ' ', ' ', ' ', ' ', ' ',
+          ' ', '4', ' ', ' ', ' ', ' ', ' ', ' ', '5',
+          '2', ' ', ' ', ' ', ' ', '8', '9', '3', ' ',
+          ' ', ' ', '9', '6', '7', ' ', ' ', '1', '8'
+        ];
+        this.$.grid.loadSudoku(grid);
       }
     });
   </script>

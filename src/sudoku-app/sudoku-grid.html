@@ -1,0 +1,140 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../src/sudoku-app/sudoku-cell.html">
+
+<dom-module id="sudoku-grid">
+  <template>
+    <style>
+      .grid{
+          text-align:center;
+          font-size:24px;
+      }
+    </style>
+
+    <div class="grid" style="width: {{width}}px; height: {{height}}">
+      <template is="dom-repeat" id="sudokuCells" items="{{cells}}" as="cell">
+        <sudoku-cell id="sudoku-cell" value="{{cell.value}}" cell={{cell}} auto-solve={{autoSolve}}></sudoku-cell>
+      </template>
+      <button on-tap="toggleAutoResolve">Autoresolve</button>{{autoSolve}}
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'sudoku-grid',
+
+      properties: {
+        cells: {
+          type: Array,
+          value: function() {
+            return [];
+          },
+          notify: true
+        },
+        width: {
+          type: String,
+          computed: '_calculateGridSize(gridSize, regionSize)'
+        },
+        height: {
+          type: String,
+          computed: '_calculateGridSize(gridSize, regionSize)'
+        },
+        gridSize: {
+          type: Number,
+          value: 9
+        },
+        regionSize: {
+          type: Number,
+          value: 3
+        },
+        possibleValues: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        },
+        autoSolve: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          notify: true
+        }
+      },
+      toggleAutoResolve: function(){
+        this.set('autoSolve', !this.autoSolve);
+      },
+      _calculateGridSize: function(gridSize, regionSize){
+        let cellSize = 50;
+        let normalBorderSize = 1;
+        let boldBorderSize = 3;
+        return gridSize*cellSize+((gridSize-2)*normalBorderSize*2)+((2+regionSize-1)*boldBorderSize);
+      },
+      ready: function(){
+        this._createGrid();
+      },
+      _getPossibleValues: function(){
+        if(this.possibleValues.length === 0){
+          for (let i = 0; i < this.gridSize; i++){
+            this.push('possibleValues', i+1);
+          }
+        }
+        return this.get('possibleValues').slice();
+      },
+      _createGrid: function(){
+        this.set('cells', []);
+        let gridSize = this.gridSize;
+        let regionSize = this.regionSize;
+
+        for (let y = 0; y < gridSize; y++){
+          for (let x = 0; x < gridSize; x++){
+            let i = x+(y*gridSize);
+            let possibleCellValues;
+            let row = y+1;
+            let column = x+1;
+            let region = (Math.floor(x/regionSize) + (Math.floor(y/regionSize) * 3)+1);
+            let borderTop = false || (row % regionSize) === 1;
+            let borderBottom = false || row === gridSize;
+            let borderLeft = false || (column % regionSize) === 1;
+            let borderRight = false || column === gridSize;
+            let cell = {
+                          row: row,
+                          column: column,
+                          region: region,
+                          value: undefined,
+                          possibleValues: this._getPossibleValues(),
+                          borders: {
+                                      top: borderTop,
+                                      bottom: borderBottom,
+                                      left: borderLeft,
+                                      right: borderRight
+                                    }
+                        };
+            this.push('cells', cell);
+          }
+        }
+      },
+      _loadGridData: function(grid){
+        for(let i = 0; i < grid.length; i++){
+          value = grid[i];
+          if(!isNaN(value) && +value !== 0){
+            value = parseInt(grid[i], 10);
+            this.set('cells.'+i+'.value', value);
+          }
+        }
+      },
+      loadSudoku: function(grid){
+        this.set('cells', []);
+        this.set('gridSize', Math.sqrt(grid.length));
+        this.set('regionSize', Math.sqrt(Math.sqrt(grid.length)));
+
+        this._createGrid();
+        this._loadGridData(grid);
+      },
+      _newSudoku: function(){
+        this.set('cells', []);
+
+        this._createGrid();
+      }
+    });
+  </script>
+</dom-module>

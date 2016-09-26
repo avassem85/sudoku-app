@@ -31,7 +31,7 @@
       }
     </style>
 
-    <input id="input" type="text" maxlength="1" value="{{cell.value}}" on-tap="_click">
+    <input id="input" type="text" maxlength="1" value="{{cell.value}}">
     <iron-signals id="ironSignal" on-iron-signal-cell-resolved="cellResolved"></iron-signals>
   </template>
 
@@ -45,7 +45,26 @@
           type: Object,
           reflectToAttribute: true,
           notify: true
+        },
+        value: {
+          type: String,
+          reflectToAttribute: true,
+          notify: true,
+          observer: '_setValue'
+        },
+        autoSolve: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          observer: '_resolve'
         }
+      },
+      _setValue: function(){
+        this.set('cell.possibleValues', []);
+        this.set('resolved', true);
+        this.async(function(){
+          this.fire('iron-signal', {name: "cell-resolved", data: this.cell});
+        }, 100);
       },
       ready: function(){
         this.initializeCssClasses();
@@ -63,10 +82,13 @@
         let possibleValues = this.cell.possibleValues;
         if(possibleValues.length > 1 && possibleValues.indexOf(value) !== -1){
           this.splice('cell.possibleValues', possibleValues.indexOf(value), 1);
-          if(possibleValues.length === 1){
-            this.set('cell.value', this.cell.possibleValues[0]);
-            this.fire('iron-signal', {name: "cell-resolved", data: this.cell});
-          }
+          this._resolve();
+        }
+      },
+      _resolve: function() {
+        if(this.autoSolve && this.cell && this.cell.possibleValues.length === 1){
+          this.set('cell.value', this.cell.possibleValues[0]);
+          this.fire('iron-signal', {name: "cell-resolved", data: this.cell});
         }
       },
       initializeCssClasses: function(){
@@ -74,9 +96,6 @@
         this.toggleClass('border-bottom', this.cell.borders.bottom, this.$.input);
         this.toggleClass('border-left', this.cell.borders.left, this.$.input);
         this.toggleClass('border-right', this.cell.borders.right, this.$.input);
-      },
-      _click: function(e){
-        console.log(this.debug);
       }
     });
   </script>
