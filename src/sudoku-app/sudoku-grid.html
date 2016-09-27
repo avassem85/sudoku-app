@@ -12,9 +12,8 @@
 
     <div class="grid" style="width: {{width}}px; height: {{height}}">
       <template is="dom-repeat" id="sudokuCells" items="{{cells}}" as="cell">
-        <sudoku-cell id="sudoku-cell" borders=[[cell.borders]] value="{{cell.value}}" possible-values={{cell.possibleValues}} row=[[cell.row]] column=[[cell.column]] region=[[cell.region]] auto-solve={{autoSolve}}></sudoku-cell>
+        <sudoku-cell id="sudoku-cell" min-value=1 max-value=[[gridSize]] borders=[[cell.borders]] value="{{cell.value}}" row=[[cell.row]] column=[[cell.column]] region=[[cell.region]] auto-solve={{autoSolve}}></sudoku-cell>
       </template>
-      <button on-tap="toggleAutoResolve">Autoresolve</button>{{autoSolve}}
     </div>
   </template>
 
@@ -25,6 +24,13 @@
 
       properties: {
         cells: {
+          type: Array,
+          value: function() {
+            return [];
+          },
+          notify: true
+        },
+        regions: {
           type: Array,
           value: function() {
             return [];
@@ -54,9 +60,6 @@
           notify: true
         }
       },
-      toggleAutoResolve: function(){
-        this.set('autoSolve', !this.autoSolve);
-      },
       _calculateGridSize: function(gridSize, regionSize){
         let cellSize = 50;
         let normalBorderSize = 1;
@@ -68,17 +71,11 @@
         return Math.sqrt(gridSize);
       },
       ready: function(){
-        this._createGrid();
-      },
-      _getPossibleValues: function(){
-        let possibleValues = [];
-        for (let i = 0; i < this.gridSize; i++){
-          possibleValues.push(i+1);
-        }
-        return possibleValues;
+
       },
       _createGrid: function(){
         this.set('cells', []);
+        this.set('regions', []);
         let gridSize = this.gridSize;
         let regionSize = this.regionSize;
 
@@ -96,8 +93,6 @@
                           row: row,
                           column: column,
                           region: region,
-                          value: undefined,
-                          possibleValues: this._getPossibleValues(),
                           borders: {
                                       top: borderTop,
                                       bottom: borderBottom,
@@ -119,15 +114,12 @@
         }
       },
       loadSudoku: function(grid){
-        this.set('cells', []);
         this.set('gridSize', Math.sqrt(grid.length));
 
         this._createGrid();
         this._loadGridData(grid);
       },
-      _newSudoku: function(){
-        this.set('cells', []);
-
+      newSudoku: function(){
         this._createGrid();
       }
     });
