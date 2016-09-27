@@ -31,8 +31,8 @@
       }
     </style>
 
-    <input id="input" type="text" maxlength="1" value="{{cell.value}}">
-    <iron-signals id="ironSignal" on-iron-signal-cell-resolved="cellResolved"></iron-signals>
+    <input id="input" type="text" maxlength="1" value="{{value}}">
+    <iron-signals id="ironSignal" on-iron-signal-cell-resolved="handleCellResolvedEvent"></iron-signals>
   </template>
 
   <script>
@@ -41,10 +41,9 @@
       is: 'sudoku-cell',
 
       properties: {
-        cell: {
+        borders: {
           type: Object,
-          reflectToAttribute: true,
-          notify: true
+          reflectToAttribute: true
         },
         value: {
           type: String,
@@ -52,50 +51,72 @@
           notify: true,
           observer: '_setValue'
         },
+        possibleValues: {
+          type: Array,
+          value: function() {
+            return [];
+          },
+          reflectToAttribute: true,
+          notify: true
+        },
+        row: {
+          type: Number,
+          reflectToAttribute: true
+        },
+        column: {
+          type: Number,
+          reflectToAttribute: true
+        },
         autoSolve: {
           type: Boolean,
           value: false,
           reflectToAttribute: true,
-          observer: '_resolve'
+          observer: '_autoSolve'
+        },
+        resolved: {
+          type: Boolean,
+          value: false
         }
       },
-      _setValue: function(){
-        this.set('cell.possibleValues', []);
+      _setValue: function(value){
+        this.set('possibleValues', []);
         this.set('resolved', true);
         this.async(function(){
-          this.fire('iron-signal', {name: "cell-resolved", data: this.cell});
+          this.fire('iron-signal', {name: "cell-resolved", data: this});
         }, 100);
       },
       ready: function(){
-        this.initializeCssClasses();
-
-        this.cellResolved = function(e, detail, sender) {
-          let cell = detail;
-          if(cell !== this.cell && this.cell.possibleValues.length > 1){
-            if(this.cell.row === cell.row || this.cell.column === cell.column || this.cell.region === cell.region){
-              this.removePossibleValue(cell.value);
-            }
+        this._initializeCssClasses();
+      },
+      handleCellResolvedEvent: function(e, detail, sender) {
+        let cell = detail;
+        if(cell !== this && !this.resolved){
+          if(this.row === cell.row || this.column === cell.column || this.region === cell.region){
+            this._removePossibleValue(cell.value);
           }
-        };
+        }
       },
-      removePossibleValue: function(value){
-        let possibleValues = this.cell.possibleValues;
+      _removePossibleValue: function(value){
+        let possibleValues = this.get('possibleValues');
         if(possibleValues.length > 1 && possibleValues.indexOf(value) !== -1){
-          this.splice('cell.possibleValues', possibleValues.indexOf(value), 1);
-          this._resolve();
+          this.splice('possibleValues', possibleValues.indexOf(value), 1);
+          if(this.autoSolve && this.possibleValues.length === 1){
+            this.set('value', this.possibleValues[0]);
+            this.set('possibleValues', []);
+          }
         }
       },
-      _resolve: function() {
-        if(this.autoSolve && this.cell && this.cell.possibleValues.length === 1){
-          this.set('cell.value', this.cell.possibleValues[0]);
-          this.fire('iron-signal', {name: "cell-resolved", data: this.cell});
+      _autoSolve: function(){
+        if(!this.resolved && this.autoSolve && this.possibleValues === 1){
+          this.set('value', this.possibleValues[0]);
+          this.set('possibleValues', []);
         }
       },
-      initializeCssClasses: function(){
-        this.toggleClass('border-top', this.cell.borders.top, this.$.input);
-        this.toggleClass('border-bottom', this.cell.borders.bottom, this.$.input);
-        this.toggleClass('border-left', this.cell.borders.left, this.$.input);
-        this.toggleClass('border-right', this.cell.borders.right, this.$.input);
+      _initializeCssClasses: function(){
+        this.toggleClass('border-top', this.borders.top, this.$.input);
+        this.toggleClass('border-bottom', this.borders.bottom, this.$.input);
+        this.toggleClass('border-left', this.borders.left, this.$.input);
+        this.toggleClass('border-right', this.borders.right, this.$.input);
       }
     });
   </script>
