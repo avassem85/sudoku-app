@@ -41,7 +41,7 @@
         },
         gridSize: {
           type: Number,
-          value: 9
+          value: 4
         },
         regionSize: {
           type: Number,
@@ -61,7 +61,8 @@
         let cellSize = 50;
         let normalBorderSize = 1;
         let boldBorderSize = 3;
-        return gridSize*cellSize+((gridSize-2)*normalBorderSize*2)+((2+regionSize-1)*boldBorderSize);
+
+        return gridSize * (cellSize + normalBorderSize * 2) + (2 + regionSize - 1) * (boldBorderSize - normalBorderSize);
       },
       _calculateRegionSize: function(gridSize){
         return Math.sqrt(gridSize);
