@@ -19,16 +19,16 @@
       properties: {
         grids: {
           type: Array,
-          value: function () {
+          value: function() {
             return [];
           },
         },
       },
-      ready: function () {
+      ready: function() {
         this.loadSudoku();
       },
 
-      _addGrid: function () {
+      _addGrid: function() {
         var node = document.createElement('sudoku-grid');
         Polymer.dom(this.$.grids).appendChild(node);
 

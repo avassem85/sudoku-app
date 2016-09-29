@@ -25,13 +25,13 @@
       properties: {
         cells: {
           type: Array,
-          value: function () {
+          value: function() {
             return [];
           }, notify: true,
         },
         regions: {
           type: Array,
-          value: function () {
+          value: function() {
             return [];
           },
 
@@ -39,11 +39,11 @@
         },
         width: {
           type: String,
-          computed: '_calculateGridSize(gridSize, regionSize)'
+          computed: '_calculateGridSize(gridSize, regionSize)',
         },
         height: {
           type: String,
-          computed: '_calculateGridSize(gridSize, regionSize)'
+          computed: '_calculateGridSize(gridSize, regionSize)',
         },
         gridSize: {
           type: Number,
@@ -51,7 +51,7 @@
         },
         regionSize: {
           type: Number,
-          computed: '_calculateRegionSize(gridSize)'
+          computed: '_calculateRegionSize(gridSize)',
         },
         autoSolve: {
           type: Boolean,
@@ -60,7 +60,7 @@
           notify: true,
         },
       },
-      _calculateGridSize: function (gridSize, regionSize) {
+      _calculateGridSize(gridSize, regionSize) {
         let cellSize = 50;
         let normalBorderSize = 1;
         let boldBorderSize = 3;
@@ -77,7 +77,7 @@
 
       },
 
-      _createGrid: function () {
+      _createGrid() {
         this.set('cells', []);
         this.set('regions', []);
         let gridSize = this.gridSize;
@@ -88,7 +88,8 @@
             let i = x + (y * gridSize);
             let row = y + 1;
             let column = x + 1;
-            let region = (Math.floor(x / regionSize) + (Math.floor(y / regionSize) * 3) + 1);
+            let region = (Math.floor(x / regionSize) +
+                          (Math.floor(y / regionSize) * 3) + 1);
             let borderTop = false || (row % regionSize) === 1;
             let borderBottom = false || row === gridSize;
             let borderLeft = false || (column % regionSize) === 1;

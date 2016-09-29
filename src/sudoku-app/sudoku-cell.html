@@ -59,7 +59,7 @@
         },
         possibleValues: {
           type: Array,
-          value: function () {
+          value: function() {
             return [];
           },
         },
@@ -82,11 +82,11 @@
           value: false,
         },
       },
-      _setValue: function (value) {
-        this.async(function () {
+      _setValue(value) {
+        this.async(function() {
           this.set('possibleValues', []);
           this.set('resolved', true);
-          this.fire('iron-signal', { name: 'cell-resolved', data: this });
+          this.fire('iron-signal', {name: 'cell-resolved', data: this});
         }, 100);
       },
 
@@ -101,16 +101,18 @@
         this._createArrayOfPossibleValues();
       },
 
-      handleCellResolvedEvent: function (e, detail, sender) {
+      handleCellResolvedEvent(e, detail, sender) {
         let cell = detail;
         if (cell !== this && !this.resolved) {
-          if (this.row === cell.row || this.column === cell.column || this.region === cell.region) {
+          if (this.row === cell.row ||
+            this.column === cell.column ||
+            this.region === cell.region) {
             this._removePossibleValue(cell.value);
           }
         }
       },
 
-      _removePossibleValue: function (value) {
+      _removePossibleValue(value) {
         let possibleValues = this.get('possibleValues');
         if (possibleValues.length > 1 && possibleValues.indexOf(value) !== -1) {
           this.splice('possibleValues', possibleValues.indexOf(value), 1);
@@ -121,14 +123,14 @@
         }
       },
 
-      _autoSolve: function () {
+      _autoSolve() {
         if (!this.resolved && this.autoSolve && this.possibleValues === 1) {
           this.set('value', this.possibleValues[0]);
           this.set('possibleValues', []);
         }
       },
 
-      _initializeCssClasses: function () {
+      _initializeCssClasses() {
         this.toggleClass('border-top', this.borders.top, this.$.input);
         this.toggleClass('border-bottom', this.borders.bottom, this.$.input);
         this.toggleClass('border-left', this.borders.left, this.$.input);
