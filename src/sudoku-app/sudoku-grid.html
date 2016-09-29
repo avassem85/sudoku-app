@@ -85,7 +85,6 @@
 
         for (let y = 0; y < gridSize; y++) {
           for (let x = 0; x < gridSize; x++) {
-            let i = x + (y * gridSize);
             let row = y + 1;
             let column = x + 1;
             let region = (Math.floor(x / regionSize) +
@@ -112,7 +111,7 @@
 
       _loadGridData(grid) {
         for (let i = 0; i < grid.length; i++) {
-          value = grid[i];
+          let value = grid[i];
           if (!isNaN(value) && +value !== 0) {
             value = parseInt(grid[i], 10);
             this.set('cells.' + i + '.value', value);

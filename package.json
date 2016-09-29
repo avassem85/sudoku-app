@@ -2,6 +2,14 @@
   "name": "sudoku-app",
   "devDependencies": {
     "gulp": "^3.9.1",
-    "web-component-tester": "^4.3.4"
+    "gulp-html-extract": "^0.2.0",
+    "gulp-if": "^2.0.1",
+    "gulp-jscs": "^4.0.0",
+    "gulp-jshint": "^2.0.1",
+    "gulp-load-plugins": "^1.3.0",
+    "gulp-load-utils": "0.0.4",
+    "gulp-print": "^2.0.1",
+    "web-component-tester": "^4.3.4",
+    "yargs": "^5.0.0"
   }
 }

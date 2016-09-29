@@ -82,7 +82,7 @@
           value: false,
         },
       },
-      _setValue(value) {
+      _setValue() {
         this.async(function() {
           this.set('possibleValues', []);
           this.set('resolved', true);
@@ -101,8 +101,8 @@
         this._createArrayOfPossibleValues();
       },
 
-      handleCellResolvedEvent(e, detail, sender) {
-        let cell = detail;
+      handleCellResolvedEvent(e) {
+        let cell = e.detail;
         if (cell !== this && !this.resolved) {
           if (this.row === cell.row ||
             this.column === cell.column ||
