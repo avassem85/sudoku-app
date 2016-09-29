@@ -5,6 +5,7 @@
   <template>
     <style>
     </style>
+    <div id="grids"></div>
 
     <button on-tap="newSudoku">New</button>
     <button on-tap="loadSudoku">Load</button>
@@ -18,34 +19,35 @@
       properties: {
         grids: {
           type: Array,
-          value: function(){
+          value: function () {
             return [];
-          }
-        }
+          },
+        },
       },
-      ready: function(){
+      ready: function () {
         this.loadSudoku();
       },
-      _addGrid: function(){
+
+      _addGrid: function () {
         var node = document.createElement('sudoku-grid');
-        node.autoSolve = false;
-        this.appendChild(node);
-        this.push('grids', node);
+        Polymer.dom(this.$.grids).appendChild(node);
 
         return node;
       },
-      _removeGrids: function(){
-        let num = this.grids.length;
-        for(let i = 0; i < num; i++){
-          this.removeChild(this.grids[i]);
-          this.splice('grids', this.get('grids').indexOf(value), 1);
+
+      _removeGrids() {
+        let grids = Polymer.dom(this.$.grids).childNodes;
+        for (let i = 0; i < grids.length; i++) {
+          grids[i].remove();
         }
       },
-      newSudoku: function(){
+
+      newSudoku() {
         this._removeGrids();
         this._addGrid().newSudoku();
       },
-      loadSudoku: function(){
+
+      loadSudoku() {
 
         // Hard Sudoku
         // let data = [
@@ -60,18 +62,31 @@
         //   ' ', '7', '6', ' ', ' ', ' ', '4', '8', ' '
         // ];
 
-        // Hard Sudoku
-        let data = [
-          ' ', ' ', ' ', '2', ' ', ' ', ' ', '6', '3',
-          '3', ' ', ' ', ' ', ' ', '5', '4', ' ', '1',
-          ' ', ' ', '1', ' ', ' ', '3', '9', '8', ' ',
-          ' ', ' ', ' ', ' ', ' ', ' ', ' ', '9', ' ',
-          ' ', ' ', ' ', '5', '3', '8', ' ', ' ', ' ',
-          ' ', '3', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
-          ' ', '2', '6', '3', ' ', ' ', '5', ' ', ' ',
-          '5', ' ', '3', '7', ' ', ' ', ' ', ' ', ' ',
-          '4', '7', ' ', ' ', ' ', '1', ' ', ' ', '8'
-        ];
+        // // Hard Sudoku
+        // let data = [
+        //   ' ', ' ', ' ', '2', ' ', ' ', ' ', '6', '3',
+        //   '3', ' ', ' ', ' ', ' ', '5', '4', ' ', '1',
+        //   ' ', ' ', '1', ' ', ' ', '3', '9', '8', ' ',
+        //   ' ', ' ', ' ', ' ', ' ', ' ', ' ', '9', ' ',
+        //   ' ', ' ', ' ', '5', '3', '8', ' ', ' ', ' ',
+        //   ' ', '3', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+        //   ' ', '2', '6', '3', ' ', ' ', '5', ' ', ' ',
+        //   '5', ' ', '3', '7', ' ', ' ', ' ', ' ', ' ',
+        //   '4', '7', ' ', ' ', ' ', '1', ' ', ' ', '8'
+        // ];
+
+        // Standard Sudoku
+        // let data = [
+        //   ' ', ' ', '5', ' ', '9', ' ', ' ', ' ', '1',
+        //   ' ', ' ', ' ', ' ', ' ', '2', ' ', '7', '3',
+        //   '7', '6', ' ', ' ', ' ', '8', '2', ' ', ' ',
+        //   ' ', '1', '2', ' ', ' ', '9', ' ', ' ', '4',
+        //   ' ', ' ', ' ', '2', ' ', '3', ' ', ' ', ' ',
+        //   '3', ' ', ' ', '1', ' ', ' ', '9', '6', ' ',
+        //   ' ', ' ', '1', '9', ' ', ' ', ' ', '5', '8',
+        //   '9', '7', ' ', '5', ' ', ' ', ' ', ' ', ' ',
+        //   '5', ' ', ' ', ' ', '3', ' ', '7', ' ', ' '
+        // ];
 
         // let data = [
         //   '4', '9', ' ', ' ', '2', '1', '5', ' ', ' ',
@@ -99,17 +114,17 @@
         //   ' ', ' ', ' ', ' '
         // ]
 
-        // let data = [
-        //   '3', ' ', ' ', '2',
-        //   ' ', '4', '1', ' ',
-        //   ' ', '3', '2', ' ',
-        //   '4', ' ', ' ', '1'
-        // ]
+        let data = [
+          '3', ' ', ' ', '2',
+          ' ', '4', '1', ' ',
+          ' ', '3', '2', ' ',
+          '4', ' ', ' ', '1',
+        ];
         this._removeGrids();
         let grid = this._addGrid();
         grid.loadSudoku(data);
         grid.autoSolve = true;
-      }
+      },
     });
   </script>
 </dom-module>

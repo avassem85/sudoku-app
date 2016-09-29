@@ -43,99 +43,108 @@
       properties: {
         borders: {
           type: Object,
-          reflectToAttribute: true
+          reflectToAttribute: true,
         },
         value: {
           type: String,
           reflectToAttribute: true,
           notify: true,
-          observer: '_setValue'
+          observer: '_setValue',
         },
         minValue: {
-          type: Number
+          type: Number,
         },
         maxValue: {
-          type: Number
+          type: Number,
         },
         possibleValues: {
           type: Array,
-          value: function() {
+          value: function () {
             return [];
-          }
+          },
         },
         row: {
           type: Number,
-          reflectToAttribute: true
+          reflectToAttribute: true,
         },
         column: {
           type: Number,
-          reflectToAttribute: true
+          reflectToAttribute: true,
         },
         autoSolve: {
           type: Boolean,
           value: false,
           reflectToAttribute: true,
-          observer: '_autoSolve'
+          observer: '_autoSolve',
         },
         resolved: {
           type: Boolean,
-          value: false
-        }
+          value: false,
+        },
       },
-      _setValue: function(value){
-        this.async(function(){
+      _setValue: function (value) {
+        this.async(function () {
           this.set('possibleValues', []);
           this.set('resolved', true);
-          this.fire('iron-signal', {name: "cell-resolved", data: this});
+          this.fire('iron-signal', { name: 'cell-resolved', data: this });
         }, 100);
       },
-      _createArrayOfPossibleValues: function(){
-        for(let i = this.get('minValue'); i <= this.get('maxValue'); i++){
+
+      _createArrayOfPossibleValues() {
+        for (let i = this.get('minValue'); i <= this.get('maxValue'); i++) {
           this.push('possibleValues', i);
         }
       },
-      ready: function(){
+
+      ready() {
         this._initializeCssClasses();
         this._createArrayOfPossibleValues();
       },
-      handleCellResolvedEvent: function(e, detail, sender) {
+
+      handleCellResolvedEvent: function (e, detail, sender) {
         let cell = detail;
-        if(cell !== this && !this.resolved){
-          if(this.row === cell.row || this.column === cell.column || this.region === cell.region){
+        if (cell !== this && !this.resolved) {
+          if (this.row === cell.row || this.column === cell.column || this.region === cell.region) {
             this._removePossibleValue(cell.value);
           }
         }
       },
-      _removePossibleValue: function(value){
-        if(this.get('possibleValues').length > 1 && this.get('possibleValues').indexOf(value) !== -1){
-          this.splice('possibleValues', this.get('possibleValues').indexOf(value), 1);
-          if(this.autoSolve && this.get('possibleValues').length === 1){
+
+      _removePossibleValue: function (value) {
+        let possibleValues = this.get('possibleValues');
+        if (possibleValues.length > 1 && possibleValues.indexOf(value) !== -1) {
+          this.splice('possibleValues', possibleValues.indexOf(value), 1);
+          if (this.autoSolve && this.get('possibleValues').length === 1) {
             this.set('value', this.get('possibleValues.0'));
             this.set('possibleValues', []);
           }
         }
       },
-      _autoSolve: function(){
-        if(!this.resolved && this.autoSolve && this.possibleValues === 1){
+
+      _autoSolve: function () {
+        if (!this.resolved && this.autoSolve && this.possibleValues === 1) {
           this.set('value', this.possibleValues[0]);
           this.set('possibleValues', []);
         }
       },
-      _initializeCssClasses: function(){
+
+      _initializeCssClasses: function () {
         this.toggleClass('border-top', this.borders.top, this.$.input);
         this.toggleClass('border-bottom', this.borders.bottom, this.$.input);
         this.toggleClass('border-left', this.borders.left, this.$.input);
         this.toggleClass('border-right', this.borders.right, this.$.input);
       },
-      valueChanged: function(event){
+
+      valueChanged(event) {
         let value = +event.srcElement.value;
-        if(this.get('possibleValues').indexOf(value) !== -1){
+        if (this.get('possibleValues').indexOf(value) !== -1) {
           this.set('value', value);
         }
       },
-      click: function(){
+
+      click() {
         console.log(this, this.possibleValues);
-      }
+      },
     });
   </script>
 </dom-module>
