@@ -25,17 +25,17 @@
       properties: {
         cells: {
           type: Array,
-          value: function() {
+          value: function () {
             return [];
-          },
-          notify: true
+          }, notify: true,
         },
         regions: {
           type: Array,
-          value: function() {
+          value: function () {
             return [];
           },
-          notify: true
+
+          notify: true,
         },
         width: {
           type: String,
@@ -47,7 +47,7 @@
         },
         gridSize: {
           type: Number,
-          value: 4
+          value: 4,
         },
         regionSize: {
           type: Number,
@@ -57,34 +57,38 @@
           type: Boolean,
           value: true,
           reflectToAttribute: true,
-          notify: true
-        }
+          notify: true,
+        },
       },
-      _calculateGridSize: function(gridSize, regionSize){
+      _calculateGridSize: function (gridSize, regionSize) {
         let cellSize = 50;
         let normalBorderSize = 1;
         let boldBorderSize = 3;
 
-        return gridSize * (cellSize + normalBorderSize * 2) + (2 + regionSize - 1) * (boldBorderSize - normalBorderSize);
+        return gridSize * (cellSize + normalBorderSize * 2) +
+          (2 + regionSize - 1) * (boldBorderSize - normalBorderSize);
       },
-      _calculateRegionSize: function(gridSize){
+
+      _calculateRegionSize(gridSize) {
         return Math.sqrt(gridSize);
       },
-      ready: function(){
+
+      ready() {
 
       },
-      _createGrid: function(){
+
+      _createGrid: function () {
         this.set('cells', []);
         this.set('regions', []);
         let gridSize = this.gridSize;
         let regionSize = this.regionSize;
 
-        for (let y = 0; y < gridSize; y++){
-          for (let x = 0; x < gridSize; x++){
-            let i = x+(y*gridSize);
-            let row = y+1;
-            let column = x+1;
-            let region = (Math.floor(x/regionSize) + (Math.floor(y/regionSize) * 3)+1);
+        for (let y = 0; y < gridSize; y++) {
+          for (let x = 0; x < gridSize; x++) {
+            let i = x + (y * gridSize);
+            let row = y + 1;
+            let column = x + 1;
+            let region = (Math.floor(x / regionSize) + (Math.floor(y / regionSize) * 3) + 1);
             let borderTop = false || (row % regionSize) === 1;
             let borderBottom = false || row === gridSize;
             let borderLeft = false || (column % regionSize) === 1;
@@ -97,31 +101,34 @@
                                       top: borderTop,
                                       bottom: borderBottom,
                                       left: borderLeft,
-                                      right: borderRight
-                                    }
+                                      right: borderRight,
+                                    },
                         };
             this.push('cells', cell);
           }
         }
       },
-      _loadGridData: function(grid){
-        for(let i = 0; i < grid.length; i++){
+
+      _loadGridData(grid) {
+        for (let i = 0; i < grid.length; i++) {
           value = grid[i];
-          if(!isNaN(value) && +value !== 0){
+          if (!isNaN(value) && +value !== 0) {
             value = parseInt(grid[i], 10);
-            this.set('cells.'+i+'.value', value);
+            this.set('cells.' + i + '.value', value);
           }
         }
       },
-      loadSudoku: function(grid){
+
+      loadSudoku(grid) {
         this.set('gridSize', Math.sqrt(grid.length));
 
         this._createGrid();
         this._loadGridData(grid);
       },
-      newSudoku: function(){
+
+      newSudoku() {
         this._createGrid();
-      }
+      },
     });
   </script>
 </dom-module>
