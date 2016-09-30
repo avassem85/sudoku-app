@@ -1,6 +1,7 @@
 {
   "name": "sudoku-app",
   "devDependencies": {
+    "browser-sync": "^2.17.0",
     "gulp": "^3.9.1",
     "gulp-html-extract": "^0.2.0",
     "gulp-if": "^2.0.1",
@@ -11,5 +12,10 @@
     "gulp-print": "^2.0.1",
     "web-component-tester": "^4.3.4",
     "yargs": "^5.0.0"
+  },
+  "scripts": {
+    "dev": "polymer serve & npm run watch",
+    "test": "polymer test",
+    "watch": "browser-sync start --proxy localhost:8080 --files 'src/**/*.html, src/**/*.js, images/*' "
   }
 }
